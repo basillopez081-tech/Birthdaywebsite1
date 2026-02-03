@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday | For You</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:italic,wght@700&display=swap" rel="stylesheet">
+    <!-- GSAP for 2026-tier animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --accent-primary: #ff3e8d;
+            --accent-secondary: #7000ff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        /* Animated Mesh Background */
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1a0a2e 0%, #050505 100%);
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            filter: blur(80px);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(20%, 20%) scale(1.2); }
+        }
+
+        /* Intro Overlay */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .unlock-btn {
+            background: none;
+            border: 1px solid var(--glass-border);
+            padding: 20px 40px;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .unlock-btn:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Content Sections */
+        section {
+            min-height: 100vh;
+            padding: 10vh 10vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #fff, var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+            margin-top: 50px;
+        }
+
+        .bento-item {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-primary);
+        }
+
+        .tall { grid-row: span 2; }
+        .wide { grid-column: span 2; }
+
+        /* The Message Box */
+        .gift-container {
+            text-align: center;
+            position: relative;
+        }
+
+        #gift-box {
+            font-size: 5rem;
+            cursor: pointer;
+            display: inline-block;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .message-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        /* Footer / Call to Action */
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(to bottom, transparent, rgba(112, 0, 255, 0.1));
+        }
+
+        .date-btn {
+            margin-top: 30px;
+            padding: 15px 35px;
+            border-radius: 12px;
+            background: var(--accent-primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(255, 62, 141, 0.3);
+        }
+
+        .date-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 62, 141, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .wide { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+
+    <!-- Background Elements -->
+    <div class="mesh-bg">
+        <div class="blob" style="top: 10%; left: 10%;"></div>
+        <div class="blob" style="bottom: 10%; right: 10%; background: var(--accent-secondary);"></div>
+    </div>
+
+    <!-- Intro Layer -->
+    <div id="intro-overlay">
+        <p style="margin-bottom: 20px; opacity: 0.6; letter-spacing: 2px;">FEBRUARY 2026 EDITION</p>
+        <button class="unlock-btn" onclick="startExperience()">Unlock My Birthday Wish</button>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content" style="visibility: hidden;">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="reveal-text">Happy Birthday, <br><span class="gradient-text">Beautiful Human.</span></h1>
+            <p class="reveal-text" style="font-size: 1.2rem; opacity: 0.8; max-width: 500px;">
+                Today isn't just a date on a calendar. It's a celebration of the light you bring into every room.
+            </p>
+        </section>
+
+        <!-- The Journey / Bento Grid -->
+        <section>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 40px; font-size: 2.5rem;">Why You're Rare</h2>
+            <div class="bento-grid">
+                <div class="bento-item tall">
+                    <i data-lucide="heart" style="color: var(--accent-primary)"></i>
+                    <h3 style="margin: 15px 0;">Your Heart</h3>
+                    <p style="opacity: 0.7;">The way you care for others is a masterclass in kindness. You make the world feel safe.</p>
+                </div>
+                <div class="bento-item wide">
+                    <i data-lucide="sparkles" style="color: #ffd700"></i>
+                    <h3 style="margin: 15px 0;">Your Energy</h3>
+                    <p style="opacity: 0.7;">You have this 2026-gen glow. Unstoppable, vibrant, and completely infectious.</p>
+                </div>
+                <div class="bento-item">
+                    <i data-lucide="coffee" style="color: #b08d57"></i>
+                    <h3 style="margin: 15px 0;">The Vibes</h3>
+                    <p style="opacity: 0.7;">No one makes a mundane Tuesday feel like an adventure quite like you do.</p>
+                </div>
+                <div class="bento-item">
+                    <i data-lucide="camera" style="color: #00d4ff"></i>
+                    <h3 style="margin: 15px 0;">The Memories</h3>
+                    <p style="opacity: 0.7;">Every photo we take is a story I never want to forget.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Gift Reveal -->
+        <section class="gift-container">
+            <div id="gift-box">🎁</div>
+            <div class="message-reveal">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem;">A Special Wish</h2>
+                <p style="font-size: 1.3rem; margin-top: 20px; opacity: 0.9; line-height: 1.8;">
+                    "I wanted to find a gift that matched your worth, but nothing in this world is quite that precious. So instead, I’m giving you my time, my laughs, and a promise for many more adventures."
+                </p>
+            </div>
+        </section>
+
+        <!-- Final Call to Action -->
+        <section class="cta-section">
+            <h2 class="reveal-text">Let's get together soon.</h2>
+            <p class="reveal-text">Dinner? Drinks? Or just a long walk? You name the place.</p>
+            <a href="mailto:your-email@example.com?subject=Birthday%20Date!" class="date-btn">Claim Your Birthday Treat</a>
+            <p style="margin-top: 50px; opacity: 0.3; font-size: 0.8rem;">MADE WITH ❤️ IN 2026</p>
+        </section>
+
+    </main>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Experience Start
+        function startExperience() {
+            gsap.to("#intro-overlay", {
+                opacity: 0,
+                duration: 1.5,
+                onComplete: () => {
+                    document.getElementById('intro-overlay').style.display = 'none';
+                    document.getElementById('main-content').style.visibility = 'visible';
+                    runAnimations();
+                }
+            });
+        }
+
+        // Animations
+        function runAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Hero Animation
+            gsap.from(".reveal-text", {
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.3,
+                ease: "power4.out"
+            });
+
+            // Bento Grid Stagger
+            gsap.from(".bento-item", {
+                scrollTrigger: {
+                    trigger: ".bento-grid",
+                    start: "top 80%",
+                },
+                scale: 0.8,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "back.out(1.7)"
+            });
+
+            // Gift Interaction
+            const gift = document.getElementById('gift-box');
+            gift.addEventListener('click', () => {
+                gsap.to(gift, { scale: 1.5, opacity: 0, duration: 0.5 });
+                gsap.to(".message-reveal", { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 1, 
+                    delay: 0.5,
+                    ease: "power2.out" 
+                });
+                
+                // Confetti Fallback (Simple CSS particles)
+                for(let i=0; i<30; i++) {
+                    createParticle();
+                }
+            });
+        }
+
+        function createParticle() {
+            const p = document.createElement('div');
+            p.style.position = 'fixed';
+            p.style.left = '50%';
+            p.style.top = '50%';
+            p.style.width = '10px';
+            p.style.height = '10px';
+            p.style.backgroundColor = Math.random() > 0.5 ? '#ff3e8d' : '#7000ff';
+            p.style.borderRadius = '50%';
+            document.body.appendChild(p);
+
+            gsap.to(p, {
+                x: (Math.random() - 0.5) * 600,
+                y: (Math.random() - 0.5) * 600,
+                opacity: 0,
+                duration: 2,
+                onComplete: () => p.remove()
+            });
+        }
+    </script>
+</body>
+</html>
